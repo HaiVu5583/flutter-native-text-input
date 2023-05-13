@@ -1,6 +1,5 @@
 #import "NativeTextInput.h"
 #import "NativeTextInputDelegate.h"
-
 @interface UITextView(Placeholder)
 @property(nullable, nonatomic, copy) NSAttributedString *attributedPlaceholder;
 @end
@@ -15,6 +14,15 @@
     
     float _containerWidth;
 }
+
+- (UIFont *) getFont {
+    return [UIFont fontWithName:@"Garant-Regular" size:16];
+}
+
+- (UIColor *) getColor {
+    return [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1];
+}
+
 
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -37,6 +45,8 @@
         _textView.textAlignment = [self textAlignmentFromString:args[@"textAlign"]];
         _textView.autocapitalizationType = [self textAutocapitalizationTypeFromString:args[@"textCapitalization"]];
         _textView.textContainer.lineBreakMode = NSLineBreakByCharWrapping;
+        _textView.editable = YES;
+        _textView.font =[self getFont];
         
         if ([args[@"maxLines"] intValue] == 1) {
             _textView.textContainer.maximumNumberOfLines = 1;
@@ -60,8 +70,12 @@
         _textView.delegate = _delegate;
         
         _textView.text = args[@"text"];
-        _textView.textColor = _delegate.fontColor;
-        _textView.font = _delegate.font;
+//        _textView.textColor = _delegate.fontColor;
+//        _textView.font = _delegate.font;
+        _textView.textColor = [self getColor];
+        _textView.font =[self getFont];
+
+//        UIFont(name:"AvertaStdCY-Regular",size:16);
         NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
         if (args[@"placeholder"] && ![args[@"placeholder"] isKindOfClass:[NSNull class]]) {
             if (_delegate.placeholderFont) {
@@ -123,9 +137,10 @@
 
 - (void)onSetText:(FlutterMethodCall*)call result:(FlutterResult)result {
     _textView.text = call.arguments[@"text"];
-    _textView.textColor = _delegate.fontColor;
-    _textView.font = _delegate.font;
-    
+    _textView.textColor = [self getColor];
+//    _textView.textColor = _delegate.fontColor;
+//    _textView.font = _delegate.font;
+    _textView.font =[self getFont];
     if (_textView.textContainer.maximumNumberOfLines == 1) {
         _textView.textContainer.lineBreakMode = NSLineBreakByTruncatingTail;
     }
